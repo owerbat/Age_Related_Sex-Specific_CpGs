@@ -1,27 +1,8 @@
-# from matplotlib import pyplot as plt
-# from shapely.geometry.polygon import Polygon
-
-
-# def main():
-#     left = Polygon(((0, 0), (2, 0), (2, 1), (0, 1)))
-#     lx, ly = left.exterior.xy
-#     right = Polygon(((1, 0), (3, 0), (3, 1), (1, 1)))
-#     rx, ry = right.exterior.xy
-
-#     intersection = left.intersection(right)
-#     ix, iy = intersection.exterior.xy
-
-#     print(f'areas: {left.area}, {right.area}, {intersection.area}')
-
-#     plt.plot(lx, ly)
-#     plt.plot(rx, ry)
-#     plt.plot(ix, iy)
-#     plt.show()
-
-
 import argparse
+from os.path import isfile
 
-from metrics import fill_table, save_table
+from metrics import fill_table, save_table, read_table
+from tables import get_common_table
 
 
 parser = argparse.ArgumentParser()
@@ -30,8 +11,11 @@ parser.add_argument('-sp', dest='save_path', type=str, nargs='*')
 
 
 def main():
-    data_path = 'D:/Projects/DNA_Methylation/methylation_data/'
-    save_path = 'D:/Projects/Python/Age_Related_Sex-Specific_CpGs/results/'
+    data_path = '../../DNA_Methylation/methylation_data/'
+    save_path = './results/'
+
+    gse40279 = 'GSE40279'
+    gse87571 = 'GSE87571'
 
     args = parser.parse_args()
     if args.data_path:
@@ -39,11 +23,34 @@ def main():
     if args.save_path:
         save_path = args.save_path[0]
 
-    metrics_table = fill_table(data_path+'attributes GSE87571.txt', data_path+'test.txt', save_path)
-    metrics_table = fill_table(data_path+'attributes GSE87571.txt', data_path+'GSE87571_average_beta.txt', save_path)
-    for i, row in enumerate(metrics_table):
-        print(row)
+    # GSE40279
+    gse40279_table = None
+    if isfile(save_path+gse40279+'_result_table.txt'):
+        gse40279_table = read_table(save_path+gse40279+'_result_table.txt')
+    else:
+        gse40279_table = fill_table(2, 3, data_path, gse40279, save_path)
 
+    print(f'Best CpGs ({gse40279}):')
+    for j in range(min(10, len(gse40279_table))):
+        print(gse40279_table[j])
+
+    # GSE87571
+    gse87571_table = None
+    if isfile(save_path+gse87571+'_result_table.txt'):
+        gse87571_table = read_table(save_path+gse87571+'_result_table.txt')
+    else:
+        gse87571_table = fill_table(3, 2, data_path, gse87571, save_path)
+
+    print(f'Best CpGs ({gse87571}):')
+    for j in range(min(10, len(gse87571_table))):
+        print(gse87571_table[j])
+
+    # Common CpGs
+    common_table = get_common_table(gse40279_table, gse87571_table)
+
+    print('Best common CpGs:')
+    for i in range(min(10, len(common_table))):
+        print(common_table[i])
 
 if __name__ == '__main__':
     main()

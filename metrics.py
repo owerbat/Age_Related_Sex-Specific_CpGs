@@ -2,14 +2,22 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 from matplotlib import pyplot as plt
 
-from data import get_ages, get_genders_idxs, get_betas
+from data import get_ages, get_genders_idxs, get_betas, get_bad_cpgs, get_gene_dict
 from polygon import get_polygon, get_polygons_areas, get_polygon_xy
 
 
-def fill_table(attributes_filename, betas_filename, save_path):
-    ages = get_ages(attributes_filename)
-    male_idxs, female_idxs = get_genders_idxs(attributes_filename)
-    betas, cpgs_names = get_betas(betas_filename)
+def fill_table(age_idx, gender_idx, data_path, base_name, save_path):
+    attributes_filename   = data_path+f'attributes {base_name}.txt'
+    # betas_filename        = data_path+f'test.txt'
+    betas_filename        = data_path+f'{base_name}_average_beta.txt'
+    bad_cpgs_filename     = data_path+'bad_cpgs.txt'
+    annotations_filename  = data_path+'annotations.txt'
+
+    ages = get_ages(attributes_filename, age_idx)
+    male_idxs, female_idxs = get_genders_idxs(attributes_filename, gender_idx)
+    bad_cpgs = get_bad_cpgs(bad_cpgs_filename, annotations_filename)
+    betas, cpgs_names = get_betas(betas_filename, bad_cpgs)
+    gene_dict = get_gene_dict(annotations_filename)
 
     male_ages   = np.asarray([ages[i] for i in male_idxs])
     female_ages = np.asarray([ages[i] for i in female_idxs])
@@ -17,6 +25,12 @@ def fill_table(attributes_filename, betas_filename, save_path):
     table = []
 
     for cpg_idx, cpg_name in enumerate(cpgs_names):
+        gene_name = None
+        try:
+            gene_name = gene_dict[cpg_name]
+        except:
+            gene_name = 'na'
+
         male_betas   = np.asarray([betas[cpg_idx, i] for i in male_idxs])
         female_betas = np.asarray([betas[cpg_idx, i] for i in female_idxs])
 
@@ -35,10 +49,10 @@ def fill_table(attributes_filename, betas_filename, save_path):
         coef = intersection_area/union_area
 
         if (coef < .5) and ((np.abs(male_slope) > .001) or (np.abs(female_slope) > .001)):
-            table.append((cpg_name, coef, male_slope[0], female_slope[0]))
+            table.append((cpg_name, gene_name, coef, male_slope[0], female_slope[0]))
 
             # observations
-            plt.plot(male_ages,   male_betas, 'o', color='#87CEFA')
+            plt.plot(male_ages,   male_betas,   'o', color='#87CEFA')
             plt.plot(female_ages, female_betas, 'o', color='#FF69B4')
 
             # linear regression lines
@@ -50,25 +64,36 @@ def fill_table(attributes_filename, betas_filename, save_path):
                      color='#D71274')
 
             # polygons
-            plt.plot(*get_polygon_xy(male_polygon), color='#0000FF')
+            plt.plot(*get_polygon_xy(male_polygon),   color='#0000FF')
             plt.plot(*get_polygon_xy(female_polygon), color='#FC0043')
 
-            plt.title(cpg_name)
+            plt.title(f'{cpg_name} ({gene_name})')
             plt.xlabel('age')
             plt.ylabel('beta')
+            plt.axis((0, 110, -.1, 1.1))
 
-            plt.savefig(save_path+'plots/'+cpg_name+'.png')
+            plt.savefig(f'{save_path}plots/{base_name}/{cpg_name}.png')
 
             plt.clf()
 
-    table.sort(key=lambda items: items[1])
+    table.sort(key=lambda items: items[2])
 
-    save_table(table, save_path+'result_table.txt')
+    save_table(table, save_path+f'{base_name}_result_table.txt')
 
     return table
 
 
 def save_table(table, save_filename):
     with open(save_filename, 'w') as file:
-        for i, row in enumerate(table):
-            file.write(f'{row[0]}\t{row[1]}\t{row[2]}\t{row[3]}\n')
+        file.write('cpg\tgene\tintersection_area\tslope_male\tslope_female\n')
+        for row in table:
+            file.write(f'{row[0]}\t{row[1]}\t{row[2]}\t{row[3]}\t{row[4]}\n')
+
+def read_table(table_filename):
+    with open(table_filename) as file:
+        table = []
+        file.readline()
+        for line in file:
+            line = line.split()
+            table.append((line[0], line[1], float(line[2]), float(line[3]), float(line[4])))
+        return table
