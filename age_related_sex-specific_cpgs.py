@@ -47,6 +47,7 @@ def main():
 
     # Common CpGs
     common_table = get_common_table(gse40279_table, gse87571_table)
+    save_table(common_table, save_path+'common_result_table.txt')
 
     print('Best common CpGs:')
     for i in range(min(10, len(common_table))):

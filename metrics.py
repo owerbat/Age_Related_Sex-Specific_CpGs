@@ -6,6 +6,11 @@ from data import get_ages, get_genders_idxs, get_betas, get_bad_cpgs, get_gene_d
 from polygon import get_polygon, get_polygons_areas, get_polygon_xy
 
 
+# Intersection area bound values (25%)
+AREA_BOUND_40279 = 0.8137639994808806
+AREA_BOUND_87571 = 0.7914361897297456
+
+
 def fill_table(age_idx, gender_idx, data_path, base_name, save_path):
     attributes_filename   = data_path+f'attributes {base_name}.txt'
     # betas_filename        = data_path+f'test.txt'
@@ -46,10 +51,12 @@ def fill_table(age_idx, gender_idx, data_path, base_name, save_path):
         female_polygon = get_polygon(female_betas, female_ages, female_slope, female_intercept)
 
         intersection_area, union_area = get_polygons_areas(male_polygon, female_polygon)
-        coef = intersection_area/union_area
+        area = intersection_area/union_area
 
-        if (coef < .5) and ((np.abs(male_slope) > .001) or (np.abs(female_slope) > .001)):
-            table.append((cpg_name, gene_name, coef, male_slope[0], female_slope[0]))
+        area_bound = get_area_bound(base_name)
+
+        if (area < area_bound) and ((np.abs(male_slope) > .001) or (np.abs(female_slope) > .001)):
+            table.append((cpg_name, gene_name, area, male_slope[0], female_slope[0]))
 
             # observations
             plt.plot(male_ages,   male_betas,   'o', color='#87CEFA')
@@ -89,6 +96,7 @@ def save_table(table, save_filename):
         for row in table:
             file.write(f'{row[0]}\t{row[1]}\t{row[2]}\t{row[3]}\t{row[4]}\n')
 
+
 def read_table(table_filename):
     with open(table_filename) as file:
         table = []
@@ -97,3 +105,7 @@ def read_table(table_filename):
             line = line.split()
             table.append((line[0], line[1], float(line[2]), float(line[3]), float(line[4])))
         return table
+
+
+def get_area_bound(base_name):
+    return AREA_BOUND_40279 if base_name == 'GSE40279' else AREA_BOUND_87571

@@ -104,5 +104,7 @@ venv.bak/
 .mypy_cache/
 
 # this project
+results/plots/*.png
 results/plots/GSE40279/*.png
 results/plots/GSE87571/*.png
+*.npz
