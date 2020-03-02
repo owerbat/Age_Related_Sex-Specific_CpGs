@@ -2,52 +2,53 @@ import argparse
 from os.path import isfile
 
 from metrics import fill_table, save_table, read_table
-from tables import get_common_table
+from tables import get_common_table_multiple
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-dp', dest='data_path', type=str, nargs='*')
-parser.add_argument('-sp', dest='save_path', type=str, nargs='*')
+parser.add_argument('-dp', dest='DATA_PATH', type=str, nargs='*')
+parser.add_argument('-sp', dest='SAVE_PATH', type=str, nargs='*')
+
+
+DATA_PATH = '../../DNA_Methylation/methylation_data/'
+SAVE_PATH = './results/'
+
+
+def compute(base_name, age_idx, gender_idx):
+    table = None
+    if isfile(SAVE_PATH+base_name+'_result_table.txt'):
+        table = read_table(SAVE_PATH+base_name+'_result_table.txt')
+    else:
+        table = fill_table(age_idx, gender_idx, DATA_PATH, base_name, SAVE_PATH)
+
+    print(f'Best CpGs ({base_name}):')
+    for j in range(min(10, len(table))):
+        print(table[j])
+
+    return table
 
 
 def main():
-    data_path = '../../DNA_Methylation/methylation_data/'
-    save_path = './results/'
+    args = parser.parse_args()
+    if args.DATA_PATH:
+        DATA_PATH = args.DATA_PATH[0]
+    if args.SAVE_PATH:
+        SAVE_PATH = args.SAVE_PATH[0]
 
     gse40279 = 'GSE40279'
     gse87571 = 'GSE87571'
+    epic     = 'epic'
+    gse55763 = 'GSE55763'
+    results  = []
 
-    args = parser.parse_args()
-    if args.data_path:
-        data_path = args.data_path[0]
-    if args.save_path:
-        save_path = args.save_path[0]
-
-    # GSE40279
-    gse40279_table = None
-    if isfile(save_path+gse40279+'_result_table.txt'):
-        gse40279_table = read_table(save_path+gse40279+'_result_table.txt')
-    else:
-        gse40279_table = fill_table(2, 3, data_path, gse40279, save_path)
-
-    print(f'Best CpGs ({gse40279}):')
-    for j in range(min(10, len(gse40279_table))):
-        print(gse40279_table[j])
-
-    # GSE87571
-    gse87571_table = None
-    if isfile(save_path+gse87571+'_result_table.txt'):
-        gse87571_table = read_table(save_path+gse87571+'_result_table.txt')
-    else:
-        gse87571_table = fill_table(3, 2, data_path, gse87571, save_path)
-
-    print(f'Best CpGs ({gse87571}):')
-    for j in range(min(10, len(gse87571_table))):
-        print(gse87571_table[j])
+    results.append(compute(gse40279, 2, 3))
+    results.append(compute(gse87571, 3, 2))
+    # results.append(compute(epic,     2, 3))
+    # results.append(compute(gse55763, 2, 3))
 
     # Common CpGs
-    common_table = get_common_table(gse40279_table, gse87571_table)
-    save_table(common_table, save_path+'common_result_table.txt')
+    common_table = get_common_table_multiple(results)
+    save_table(common_table, SAVE_PATH+'common_result_table.txt')
 
     print('Best common CpGs:')
     for i in range(min(10, len(common_table))):
