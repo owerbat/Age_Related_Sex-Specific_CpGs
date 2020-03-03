@@ -52,7 +52,7 @@ def calculate_area_bound_value(age_idx, gender_idx, data_path, base_name):
 
 
 def load_areas():
-    file = np.load('areas.npz')
+    file = np.load('./results/areas.npz')
     areas40279 = file['areas40279']
     areas87571 = file['areas87571']
 
@@ -60,11 +60,11 @@ def load_areas():
     print(f'{np.min(areas40279)}, {np.min(areas87571)}')
     print(f'{np.max(areas40279)}, {np.max(areas87571)}')
 
-    plt.hist(areas40279)
+    plt.hist(areas40279, bins = 20)
     plt.savefig(f'./results/areas_GSE40279.png')
     plt.clf()
 
-    plt.hist(areas87571)
+    plt.hist(areas87571, bins = 20)
     plt.savefig(f'./results/areas_GSE87571.png')
     plt.clf()
 
@@ -79,7 +79,7 @@ def main():
     areas40279 = calculate_area_bound_value(2, 3, data_path, gse40279)
 
     print(gse87571)
-    areas87571 =  calculate_area_bound_value(3, 2, data_path, gse87571)
+    areas87571 = calculate_area_bound_value(3, 2, data_path, gse87571)
 
     np.savez('./results/areas.npz', areas40279=areas40279, areas87571=areas87571)
 
