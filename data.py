@@ -19,7 +19,7 @@ def get_genders_idxs(attributes_filename, gender_idx):
             elif gender == 'F':
                 gender_idxs['F'].append(idx)
             else:
-                raise ValueError('Icorrect gender')
+                raise ValueError('Incorrect gender')
 
         return gender_idxs['M'], gender_idxs['F']
 

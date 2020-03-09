@@ -7,10 +7,9 @@ from polygon import get_polygon, get_polygons_areas, get_polygon_xy
 
 
 def calculate_area_bound_value(age_idx, gender_idx, data_path, base_name):
-    attributes_filename   = data_path+f'attributes {base_name}.txt'
-    # betas_filename        = data_path+f'test.txt'
-    betas_filename        = data_path+f'{base_name}_average_beta.txt'
-    bad_cpgs_filename     = data_path+'bad_cpgs.txt'
+    attributes_filename   = data_path+f'{base_name}/attributes.txt'
+    betas_filename        = data_path+f'{base_name}/betas.txt'
+    bad_cpgs_filename     = data_path+f'{base_name}/bad_cpgs.txt'
     annotations_filename  = data_path+'annotations.txt'
 
     ages = get_ages(attributes_filename, age_idx)

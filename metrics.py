@@ -12,10 +12,9 @@ AREA_BOUND_87571 = 0.7914361897297456
 
 
 def fill_table(age_idx, gender_idx, data_path, base_name, save_path):
-    attributes_filename   = data_path+f'attributes {base_name}.txt'
-    # betas_filename        = data_path+f'test.txt'
-    betas_filename        = data_path+f'{base_name}_average_beta.txt'
-    bad_cpgs_filename     = data_path+'bad_cpgs.txt'
+    attributes_filename   = data_path+f'{base_name}/attributes.txt'
+    betas_filename        = data_path+f'{base_name}/betas.txt'
+    bad_cpgs_filename     = data_path+f'{base_name}/bad_cpgs.txt'
     annotations_filename  = data_path+'annotations.txt'
 
     ages = get_ages(attributes_filename, age_idx)
