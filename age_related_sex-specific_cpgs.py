@@ -29,6 +29,9 @@ def compute(base_name, age_idx, gender_idx):
 
 
 def main():
+    global DATA_PATH
+    global SAVE_PATH
+
     args = parser.parse_args()
     if args.DATA_PATH:
         DATA_PATH = args.DATA_PATH[0]
@@ -43,11 +46,12 @@ def main():
 
     results.append(compute(gse40279, 2, 3))
     results.append(compute(gse87571, 3, 2))
-    # results.append(compute(epic,     2, 3))
-    # results.append(compute(gse55763, 2, 3))
+    results.append(compute(epic,     2, 3))
+    results.append(compute(gse55763, 3, 2))
 
     # Common CpGs
     common_table = get_common_table_multiple(results)
+    # print(f'save_path = {SAVE_PATH}')
     save_table(common_table, SAVE_PATH+'common_result_table.txt')
 
     print('Best common CpGs:')

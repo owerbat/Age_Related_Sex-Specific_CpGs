@@ -20,7 +20,7 @@ def get_common_table(table1, table2):
 
 
 def get_common_table_multiple(tables):
-    names = [set([row[0] for row in table for table in tables])]
+    names = [set([row[0] for row in table]) for table in tables]
     common_names = names[0]
 
     for i in range(1, len(names)):

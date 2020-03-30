@@ -9,6 +9,15 @@ from polygon import get_polygon, get_polygons_areas, get_polygon_xy
 # Intersection area bound values (25%)
 AREA_BOUND_40279 = 0.8137639994808806
 AREA_BOUND_87571 = 0.7914361897297456
+AREA_BOUND_EPIC  = 0.7152952487992403
+AREA_BOUND_55763 = 0.8820720148976503
+
+area_bound_dict = {
+    'GSE40279' : AREA_BOUND_40279,
+    'GSE87571' : AREA_BOUND_87571,
+    'epic'     : AREA_BOUND_EPIC,
+    'GSE55763' : AREA_BOUND_55763
+}
 
 
 def fill_table(age_idx, gender_idx, data_path, base_name, save_path):
@@ -107,4 +116,4 @@ def read_table(table_filename):
 
 
 def get_area_bound(base_name):
-    return AREA_BOUND_40279 if base_name == 'GSE40279' else AREA_BOUND_87571
+    return area_bound_dict[base_name]

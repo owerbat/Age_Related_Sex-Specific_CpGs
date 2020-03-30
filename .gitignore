@@ -107,4 +107,6 @@ venv.bak/
 results/plots/*.png
 results/plots/GSE40279/*.png
 results/plots/GSE87571/*.png
+results/plots/epic/*.png
+results/plots/GSE55763/*.png
 *.npz

@@ -4,7 +4,7 @@ import numpy as np
 def get_ages(attributes_filename, age_idx):
     with open(attributes_filename) as file:
         file.readline()
-        return np.asarray([int(line.split()[age_idx]) for line in file.readlines()], dtype=int)
+        return np.asarray([int(float(line.split()[age_idx])) for line in file.readlines()], dtype=int)
 
 
 def get_genders_idxs(attributes_filename, gender_idx):

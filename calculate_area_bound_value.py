@@ -54,10 +54,12 @@ def load_areas():
     file = np.load('./results/areas.npz')
     areas40279 = file['areas40279']
     areas87571 = file['areas87571']
+    areasEPIC  = file['areasEPIC']
+    areas55763 = file['areas55763']
 
-    print(f'{len(areas40279)}, {len(areas87571)}')
-    print(f'{np.min(areas40279)}, {np.min(areas87571)}')
-    print(f'{np.max(areas40279)}, {np.max(areas87571)}')
+    print(f'{len(areas40279)}, {len(areas87571)}, {len(areasEPIC)}, {len(areas55763)}')
+    print(f'{np.min(areas40279)}, {np.min(areas87571)}, {np.min(areasEPIC)}, {np.min(areas55763)}')
+    print(f'{np.max(areas40279)}, {np.max(areas87571)}, {np.max(areasEPIC)}, {np.max(areas55763)}')
 
     plt.hist(areas40279, bins = 20)
     plt.savefig(f'./results/areas_GSE40279.png')
@@ -67,12 +69,22 @@ def load_areas():
     plt.savefig(f'./results/areas_GSE87571.png')
     plt.clf()
 
+    plt.hist(areasEPIC, bins = 20)
+    plt.savefig(f'./results/areas_epic.png')
+    plt.clf()
+
+    plt.hist(areas55763, bins = 20)
+    plt.savefig(f'./results/areas_GSE55763.png')
+    plt.clf()
+
 
 def main():
     data_path = '../../DNA_Methylation/methylation_data/'
 
     gse40279 = 'GSE40279'
     gse87571 = 'GSE87571'
+    epic     = 'epic'
+    gse55763 = 'GSE55763'
 
     print(gse40279)
     areas40279 = calculate_area_bound_value(2, 3, data_path, gse40279)
@@ -80,7 +92,14 @@ def main():
     print(gse87571)
     areas87571 = calculate_area_bound_value(3, 2, data_path, gse87571)
 
-    np.savez('./results/areas.npz', areas40279=areas40279, areas87571=areas87571)
+    print(epic)
+    areasEPIC  = calculate_area_bound_value(2, 3, data_path, epic)
+
+    print(gse55763)
+    areas55763 = calculate_area_bound_value(3, 2, data_path, gse55763)
+
+    np.savez('./results/areas.npz', areas40279=areas40279, areas87571=areas87571,
+             areasEPIC=areasEPIC, areas55763=areas55763)
 
     load_areas()
 
