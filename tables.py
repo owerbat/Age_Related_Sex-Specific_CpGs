@@ -33,8 +33,8 @@ def get_common_table_multiple(tables):
     for name in common_names:
         gene          = data[0][name][0]
         areas         = mean([item[name][1] for item in data])
-        male_slopes   = max([item[name][2] for item in data])
-        female_slopes = max([item[name][3] for item in data])
+        male_slopes   = max([abs(item[name][2]) for item in data])
+        female_slopes = max([abs(item[name][3]) for item in data])
 
         common_table.append([name, gene, areas, male_slopes, female_slopes])
 
