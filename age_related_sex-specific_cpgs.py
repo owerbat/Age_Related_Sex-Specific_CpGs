@@ -3,6 +3,7 @@ from os.path import isfile
 
 from metrics import fill_table, save_table, read_table
 from tables import get_common_table_multiple
+from histograms import get_histogram
 
 
 parser = argparse.ArgumentParser()
@@ -43,6 +44,11 @@ def main():
     epic     = 'epic'
     gse55763 = 'GSE55763'
     results  = []
+
+    # get_histogram(2, 3, DATA_PATH, gse40279, SAVE_PATH)
+    # get_histogram(3, 2, DATA_PATH, gse87571, SAVE_PATH)
+    # get_histogram(2, 3, DATA_PATH, epic,     SAVE_PATH)
+    # get_histogram(3, 2, DATA_PATH, gse55763, SAVE_PATH, False)
 
     results.append(compute(gse40279, 2, 3))
     results.append(compute(gse87571, 3, 2))
