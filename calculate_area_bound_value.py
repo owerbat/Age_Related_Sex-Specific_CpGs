@@ -45,7 +45,7 @@ def calculate_area_bound_value(age_idx, gender_idx, data_path, base_name):
         male_polygon   = get_polygon(male_betas,   male_ages,   male_slope,   male_intercept)
         female_polygon = get_polygon(female_betas, female_ages, female_slope, female_intercept)
 
-        intersection_area, union_area = get_polygons_areas(male_polygon, female_polygon)
+        intersection_area, union_area, _ = get_polygons_areas(male_polygon, female_polygon)
         areas.append(intersection_area/union_area)
 
     q = .25
@@ -58,7 +58,7 @@ def calculate_area_bound_value(age_idx, gender_idx, data_path, base_name):
     return np.asarray(areas, dtype=float)
 
 
-def get_plot(values, bound_value, file_name):
+def get_plot(values, bound_value, base_name, file_name):
     a, b, _ = plt.hist(values, bins = 100, density=True, histtype='step', range=(0, 1))
     plt.clf()
 
@@ -72,6 +72,7 @@ def get_plot(values, bound_value, file_name):
     a, b, _ = plt.hist(values, bins = 20, density=True, histtype='step', range=(0, 1), label='гистограмма')
 
     plt.xlabel('площадь')
+    plt.title(base_name)
     plt.legend()
     plt.savefig(file_name)
     plt.clf()
@@ -88,10 +89,10 @@ def load_areas():
     print(f'{np.min(areas40279)}, {np.min(areas87571)}, {np.min(areasEPIC)}, {np.min(areas55763)}')
     print(f'{np.max(areas40279)}, {np.max(areas87571)}, {np.max(areasEPIC)}, {np.max(areas55763)}')
 
-    get_plot(areas40279, AREA_BOUND_40279, './results/areas_GSE40279.png')
-    get_plot(areas87571, AREA_BOUND_87571, './results/areas_GSE87571.png')
-    get_plot(areasEPIC,  AREA_BOUND_EPIC,  './results/areas_epic.png')
-    get_plot(areas55763, AREA_BOUND_55763, './results/areas_GSE55763.png')
+    get_plot(areas40279, AREA_BOUND_40279, 'GSE40279', './results/areas_GSE40279.png')
+    get_plot(areas87571, AREA_BOUND_87571, 'GSE87571', './results/areas_GSE87571.png')
+    get_plot(areasEPIC,  AREA_BOUND_EPIC,  'epic',     './results/areas_epic.png')
+    get_plot(areas55763, AREA_BOUND_55763, 'GSE55763', './results/areas_GSE55763.png')
 
 
 def main():

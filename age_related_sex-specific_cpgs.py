@@ -57,7 +57,6 @@ def main():
 
     # Common CpGs
     common_table = get_common_table_multiple(results)
-    # print(f'save_path = {SAVE_PATH}')
     save_table(common_table, SAVE_PATH+'common_result_table.txt')
 
     print('Best common CpGs:')

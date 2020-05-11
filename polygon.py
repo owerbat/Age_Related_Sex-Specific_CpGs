@@ -1,5 +1,4 @@
 import numpy as np
-from matplotlib import pyplot as plt
 from shapely.geometry.polygon import Polygon
 
 
@@ -23,7 +22,12 @@ def get_polygons_areas(coordinates1, coordinates2):
     intersection = polygon1.intersection(polygon2)
     union = polygon1.union(polygon2)
 
-    return intersection.area, union.area
+    try:
+        coordinates = intersection.exterior.xy
+    except AttributeError:
+        coordinates = [[0, 0, 0, 0], [0, 0, 0, 0]]
+
+    return intersection.area, union.area, coordinates
 
 
 def get_polygon_xy(coordinates):

@@ -58,7 +58,7 @@ def fill_table(age_idx, gender_idx, data_path, base_name, save_path):
         male_polygon   = get_polygon(male_betas,   male_ages,   male_slope,   male_intercept)
         female_polygon = get_polygon(female_betas, female_ages, female_slope, female_intercept)
 
-        intersection_area, union_area = get_polygons_areas(male_polygon, female_polygon)
+        intersection_area, union_area, inter_polygon = get_polygons_areas(male_polygon, female_polygon)
         area = intersection_area/union_area
 
         area_bound = get_area_bound(base_name)
@@ -82,9 +82,12 @@ def fill_table(age_idx, gender_idx, data_path, base_name, save_path):
             plt.plot(*get_polygon_xy(male_polygon),   color='#0000FF')
             plt.plot(*get_polygon_xy(female_polygon), color='#FC0043')
 
+            # intersection polygon
+            plt.fill(*inter_polygon, color=(.8, .88, .16, 0.33))
+
             plt.title(f'{cpg_name} ({gene_name})')
-            plt.xlabel('age')
-            plt.ylabel('beta')
+            plt.xlabel('возраст')
+            plt.ylabel('уровень метилирования')
             plt.axis((0, 110, -.1, 1.1))
 
             plt.savefig(f'{save_path}plots/{base_name}/{cpg_name}.png')

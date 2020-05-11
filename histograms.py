@@ -14,11 +14,11 @@ def get_histogram(age_idx, gender_idx, data_path, base_name, save_path, swap_fla
     female_ages = np.asarray([ages[i] for i in female_idxs])
 
     if swap_flag:
-        plt.hist(female_ages, bins=35, range=(-5, 105), color='#FF69B4', label='gender(F)', alpha=.6)
-        plt.hist(male_ages,   bins=35, range=(-5, 105), color='#87CEFA', label='gender(M)', alpha=.6)
+        plt.hist(female_ages, bins=35, range=(-5, 105), color='#FF69B4', label='женщины', alpha=.6)
+        plt.hist(male_ages,   bins=35, range=(-5, 105), color='#87CEFA', label='мужчины', alpha=.6)
     else:
-        plt.hist(male_ages,   bins=35, range=(-5, 105), color='#87CEFA', label='gender(M)', alpha=.6)
-        plt.hist(female_ages, bins=35, range=(-5, 105), color='#FF69B4', label='gender(F)', alpha=.6)
+        plt.hist(male_ages,   bins=35, range=(-5, 105), color='#87CEFA', label='мужчины', alpha=.6)
+        plt.hist(female_ages, bins=35, range=(-5, 105), color='#FF69B4', label='женщины', alpha=.6)
 
     plt.title(f'{base_name}')
     plt.xlabel('возраст')
