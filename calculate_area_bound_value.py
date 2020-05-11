@@ -1,9 +1,17 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression
 from matplotlib import pyplot as plt
+from scipy.interpolate import interp1d
 
 from data import get_ages, get_genders_idxs, get_betas, get_bad_cpgs, get_gene_dict
 from polygon import get_polygon, get_polygons_areas, get_polygon_xy
+
+
+# Intersection area bound values (25%)
+AREA_BOUND_40279 = 0.8137639994808806
+AREA_BOUND_87571 = 0.7914361897297456
+AREA_BOUND_EPIC  = 0.7152952487992403
+AREA_BOUND_55763 = 0.8820720148976503
 
 
 def calculate_area_bound_value(age_idx, gender_idx, data_path, base_name):
@@ -50,6 +58,25 @@ def calculate_area_bound_value(age_idx, gender_idx, data_path, base_name):
     return np.asarray(areas, dtype=float)
 
 
+def get_plot(values, bound_value, file_name):
+    a, b, _ = plt.hist(values, bins = 100, density=True, histtype='step', range=(0, 1))
+    plt.clf()
+
+    centers = [(b[i]+b[i+1])/2 for i in range(len(a))]
+    f = interp1d(centers, a, kind='cubic', bounds_error=False, fill_value=(a[0], a[-1]))
+    x_int = np.arange(0, 1, .001)
+    y_int = f(x_int)
+
+    plt.plot(x_int, y_int, color='green', label='PDF')
+    plt.vlines(bound_value, ymin=np.min(y_int), ymax=np.max(y_int), colors='red', label='квартиль 25%')
+    a, b, _ = plt.hist(values, bins = 20, density=True, histtype='step', range=(0, 1), label='гистограмма')
+
+    plt.xlabel('площадь')
+    plt.legend()
+    plt.savefig(file_name)
+    plt.clf()
+
+
 def load_areas():
     file = np.load('./results/areas.npz')
     areas40279 = file['areas40279']
@@ -61,21 +88,10 @@ def load_areas():
     print(f'{np.min(areas40279)}, {np.min(areas87571)}, {np.min(areasEPIC)}, {np.min(areas55763)}')
     print(f'{np.max(areas40279)}, {np.max(areas87571)}, {np.max(areasEPIC)}, {np.max(areas55763)}')
 
-    plt.hist(areas40279, bins = 20)
-    plt.savefig(f'./results/areas_GSE40279.png')
-    plt.clf()
-
-    plt.hist(areas87571, bins = 20)
-    plt.savefig(f'./results/areas_GSE87571.png')
-    plt.clf()
-
-    plt.hist(areasEPIC, bins = 20)
-    plt.savefig(f'./results/areas_epic.png')
-    plt.clf()
-
-    plt.hist(areas55763, bins = 20)
-    plt.savefig(f'./results/areas_GSE55763.png')
-    plt.clf()
+    get_plot(areas40279, AREA_BOUND_40279, './results/areas_GSE40279.png')
+    get_plot(areas87571, AREA_BOUND_87571, './results/areas_GSE87571.png')
+    get_plot(areasEPIC,  AREA_BOUND_EPIC,  './results/areas_epic.png')
+    get_plot(areas55763, AREA_BOUND_55763, './results/areas_GSE55763.png')
 
 
 def main():
