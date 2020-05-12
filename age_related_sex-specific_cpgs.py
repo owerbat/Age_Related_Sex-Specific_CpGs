@@ -2,7 +2,7 @@ import argparse
 from os.path import isfile
 
 from metrics import fill_table, save_table, read_table
-from tables import get_common_table_multiple
+from tables import get_common_table_multiple, get_area_table, save_area_table
 from histograms import get_histogram
 
 
@@ -58,6 +58,9 @@ def main():
     # Common CpGs
     common_table = get_common_table_multiple(results)
     save_table(common_table, SAVE_PATH+'common_result_table.txt')
+
+    area_table = get_area_table(results)
+    save_area_table(area_table, SAVE_PATH+'area_result_table.txt')
 
     print('Best common CpGs:')
     for i in range(min(10, len(common_table))):
